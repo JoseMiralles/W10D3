@@ -13,6 +13,10 @@ class Store{
         return copy;
     }
 
+    dispatch( action ){
+        this.state = this.rootReducer(this.getState(), action);
+    }
+
 }
 
 //why cant action have a field like attributeName so it know which part of state to modify so i don't need to go through a 
