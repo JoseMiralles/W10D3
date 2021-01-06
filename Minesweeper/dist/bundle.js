@@ -69,7 +69,7 @@ var Board = /*#__PURE__*/function (_React$Component) {
       });
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
         className: "board"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, "I will display  \uD83D\uDCA3"), mappedBoard);
+      }, mappedBoard);
     }
   }]);
 
@@ -131,21 +131,73 @@ var Game = /*#__PURE__*/function (_React$Component) {
 
     _this = _super.call(this, props);
     _this.state = {
-      board: new _minesweeper__WEBPACK_IMPORTED_MODULE_2__.Board(5, 6)
+      board: new _minesweeper__WEBPACK_IMPORTED_MODULE_2__.Board(10, 6),
+      won: false,
+      lost: false
     };
+    _this.updateGame = _this.updateGame.bind(_assertThisInitialized(_this));
+    _this.restartGame = _this.restartGame.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Game, [{
+    key: "restartGame",
+    value: function restartGame() {
+      this.setState({
+        board: new _minesweeper__WEBPACK_IMPORTED_MODULE_2__.Board(5, 6),
+        won: false,
+        lost: false
+      });
+    }
+  }, {
     key: "updateGame",
-    value: function updateGame() {}
+    value: function updateGame(tile, shouldFlag) {
+      if (shouldFlag) {
+        tile.toggleFlag();
+      } else {
+        tile.explore();
+
+        if (this.state.board.lost()) {
+          this.setState({
+            lost: true
+          });
+        } else if (this.state.board.won()) {
+          this.setState({
+            won: true
+          });
+        }
+      }
+
+      this.setState({
+        board: this.state.board
+      });
+    }
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_board__WEBPACK_IMPORTED_MODULE_1__.default, {
+      var message = "";
+      if (this.state.won) message = "You've won!";
+      if (this.state.lost) message = "You've lost!";
+      var modal = "";
+
+      if (message) {
+        modal = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+          className: "modal"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+          className: "modal-screen"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+          className: "modal-banner"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h1", null, message), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+          onClick: this.restartGame
+        }, "Restart"))));
+      }
+
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "board-wrapper"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_board__WEBPACK_IMPORTED_MODULE_1__.default, {
         board: this.state.board,
         updateGame: this.updateGame
-      });
+      }), modal);
     }
   }]);
 
@@ -197,12 +249,44 @@ var Tile = /*#__PURE__*/function (_React$Component) {
   var _super = _createSuper(Tile);
 
   function Tile(props) {
+    var _this;
+
     _classCallCheck(this, Tile);
 
-    return _super.call(this, props);
+    _this = _super.call(this, props);
+    _this.shouldFlag = false;
+    _this.handleTileClick = _this.handleTileClick.bind(_assertThisInitialized(_this));
+    _this.handleAltKeyDown = _this.handleAltKeyDown.bind(_assertThisInitialized(_this));
+    _this.handleAltKeyUp = _this.handleAltKeyUp.bind(_assertThisInitialized(_this));
+    return _this;
   }
 
   _createClass(Tile, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      document.addEventListener("keydown", this.handleAltKeyDown, false);
+      document.addEventListener("keyup", this.handleAltKeyUp, false);
+    }
+  }, {
+    key: "handleAltKeyUp",
+    value: function handleAltKeyUp(event) {
+      if (event.isComposing || event.keyCode === 18) {
+        this.shouldFlag = false;
+      }
+    }
+  }, {
+    key: "handleAltKeyDown",
+    value: function handleAltKeyDown(event) {
+      if (event.isComposing || event.keyCode === 18) {
+        this.shouldFlag = true;
+      }
+    }
+  }, {
+    key: "handleTileClick",
+    value: function handleTileClick(e) {
+      this.props.updateGame(this.props.tile, this.shouldFlag);
+    }
+  }, {
     key: "render",
     value: function render() {
       var t = this.props.tile;
@@ -215,6 +299,7 @@ var Tile = /*#__PURE__*/function (_React$Component) {
       if (t.explored) classNames += " revealed";
       if (!t.explored) classNames += " hidden";
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        onClick: this.handleTileClick,
         className: classNames
       }, c);
     }

@@ -21,3 +21,27 @@ div.board{
     height: auto;
     width: auto;
 }
+
+.board-wrapper{
+    display: flex;
+    justify-content: center;
+}
+
+.modal-screen{
+    z-index: 2;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: #000000cf;
+}
+.modal-banner{
+    padding: 1rem;
+    z-index: 3;
+    width: 50vw;
+    margin:auto;
+    margin-top: 2rem;
+    text-align: center;
+    background: white;
+}

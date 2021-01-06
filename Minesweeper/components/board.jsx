@@ -21,7 +21,6 @@ export default class Board extends React.Component{
         
         return(
             <div className="board">
-                <p>I will display 	&#x1F4A3;</p>
                 {mappedBoard}
             </div>
         );
