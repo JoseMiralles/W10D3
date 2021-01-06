@@ -5,6 +5,10 @@ div.tile.hidden{
     border-style: outset;
 }
 
+div.tile.flagged{
+    color: red;
+}
+
 div.tile{
     box-sizing: border-box;
     height: 30px;
