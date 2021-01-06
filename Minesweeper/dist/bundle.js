@@ -53,16 +53,23 @@ var Board = /*#__PURE__*/function (_React$Component) {
   _createClass(Board, [{
     key: "render",
     value: function render() {
+      var _this = this;
+
       var mappedBoard = this.props.board.grid.map(function (row, x) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+          className: "board-row",
           key: x
         }, row.map(function (tile, i) {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_tile__WEBPACK_IMPORTED_MODULE_1__.default, {
+            tile: tile,
+            updateGame: _this.props.updateGame,
             key: i
           });
         }));
       });
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, mappedBoard);
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "board"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, "I will display  \uD83D\uDCA3"), mappedBoard);
     }
   }]);
 
@@ -198,7 +205,18 @@ var Tile = /*#__PURE__*/function (_React$Component) {
   _createClass(Tile, [{
     key: "render",
     value: function render() {
-      return "T";
+      var t = this.props.tile;
+      var c = t.adjacentBombCount() === 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, "\xA0") : t.adjacentBombCount();
+      if (t.bombed) c = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, "\uD83D\uDCA3");
+      if (t.flagged && !t.explored) c = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, "\uD83C\uDFF4");
+      var classNames = "tile";
+      if (t.bombed) classNames += " bombed";
+      if (t.flagged) classNames += " flagged";
+      if (t.explored) classNames += " revealed";
+      if (!t.explored) classNames += " hidden";
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: classNames
+      }, c);
     }
   }]);
 

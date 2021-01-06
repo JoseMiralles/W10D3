@@ -1,0 +1,23 @@
+
+div.tile.hidden{
+    background-color: lightgray;
+    color: transparent;
+    border-style: outset;
+}
+
+div.tile{
+    box-sizing: border-box;
+    height: 30px;
+    width: 30px;
+    border: 3px black solid;
+    border-style: inset;
+    background-color: darkgray;
+    color: black;
+}
+
+div.board{
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    width: auto;
+}
